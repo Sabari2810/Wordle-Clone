@@ -1,0 +1,51 @@
+<h1>Wordle</h1>
+
+<div id="grid"></div>
+
+<style>
+    body,html{
+        color: white;
+        background-color: #111;
+        font-family: sans-serif;
+        text-align: center;
+        text-transform: uppercase;
+        /* height: 100%;
+        width: 100%; */
+        /* justify-content: center; */
+        /* align-items: center;
+        display: flex; */
+    }
+    h1{
+        font-size: 3rem;
+    }
+    .row{
+        display: flex;
+    }
+    #grid{
+     width: fit-content;
+     margin: auto;
+    }
+    .cell{
+      height:60px;
+      width:60px;
+      border:1px solid #aaa;
+      /* display: inline-block; */
+      display: flex;
+      margin:3px;
+      font-size: 40px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .correct{
+color: green;
+    }
+    .almostCorrect{
+color: olive;
+    }
+    .wrong{
+color: #aaa;
+    }
+</style>
+
+<script src="./index.js"></script>
