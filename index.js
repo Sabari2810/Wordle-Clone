@@ -4,6 +4,11 @@ let guess = "horse";
 let currentAttempt = "";
 let history = [];
 
+const GREY = "#111";
+const YELLOW = "#b59f3b";
+const GREEN = "#538d4e";
+let keyboardBtns = new Map();
+
 function buildGrid() {
   for (let i = 0; i < 6; i++) {
     let row = document.createElement("div");
@@ -19,10 +24,6 @@ function buildGrid() {
   }
 }
 
-buildGrid();
-buildKeyboard();
-updateGrid();
-
 function buildKeyboard() {
   buildKeyboardRow("qwertyuiop", false);
   buildKeyboardRow("asdfghjkl", false);
@@ -36,7 +37,8 @@ function buildKeyboardRow(letters, isEnter) {
     createBtn(row, "enter", false);
   }
   for (let letter of letters) {
-    createBtn(row, letter, false);
+    let btn = createBtn(row, letter, false);
+    keyboardBtns.set(letter, btn);
   }
   if (isEnter) {
     createBtn(
@@ -63,6 +65,7 @@ function createBtn(row, letter, isBackspace, svg) {
     handleKeyboardClick(letter);
   };
   row.appendChild(btn);
+  return btn;
 }
 
 function handleKeyboardClick(letter) {
@@ -92,7 +95,15 @@ function handleKeyDown(e, k) {
       alert("not enough letters");
       return;
     }
-    if (guess == currentAttempt) {
+    let isValid = false;
+    for (let letter of guess) {
+      if (currentAttempt.includes(letter)) {
+        isValid = true;
+      }
+    }
+    if (!isValid) {
+      alert("not in my wordlist");
+      return;
     }
     history.push(currentAttempt);
     currentAttempt = "";
@@ -106,6 +117,7 @@ function handleKeyDown(e, k) {
     }
   }
   updateGrid();
+  updateKeyboard();
 }
 
 function drawAttempt(row, attempt, isCurrent) {
@@ -127,8 +139,38 @@ function drawAttempt(row, attempt, isCurrent) {
   }
 }
 
-function getBgColor(attempt, i) {
-  if (guess.indexOf(attempt) === -1) return "#111";
-  if (guess.indexOf(attempt) !== i) return "#b59f3b";
-  return "#538d4e";
+function updateKeyboard() {
+  let keyboardColors = new Map();
+  for (let attempt of history) {
+    for (let i = 0; i < attempt.length; i++) {
+      let color = getBgColor(attempt[i], i);
+      let bestColor = keyboardColors.get(attempt[i]);
+      keyboardColors.set(attempt[i], getBestColor(color, bestColor));
+    }
+  }
+
+  for (let [key, btn] of keyboardBtns) {
+    btn.style.backgroundColor = keyboardColors.get(key);
+  }
 }
+
+function getBestColor(a, b) {
+  if (a === GREEN || b === GREEN) {
+    return GREEN;
+  }
+  if (a === YELLOW || b === YELLOW) {
+    return YELLOW;
+  }
+  return GREY;
+}
+
+function getBgColor(attempt, i) {
+  if (guess.indexOf(attempt) === -1) return GREY;
+  if (guess.indexOf(attempt) !== i) return YELLOW;
+  return GREEN;
+}
+
+buildGrid();
+buildKeyboard();
+updateGrid();
+updateKeyboard();
