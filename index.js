@@ -1,6 +1,6 @@
 let grid = document.getElementById("grid");
 
-let guess = "horse";
+let secret = "horse";
 let currentAttempt = "";
 let history = [];
 
@@ -81,22 +81,24 @@ function updateGrid() {
   drawAttempt(row, currentAttempt, true);
 }
 
-document.addEventListener("keydown", handleKeyDown);
-
 function handleKeyDown(e, k) {
   let key;
   if (e !== undefined) {
+    if (e.ctrlKey || e.altKey) {
+      return;
+    }
     key = e.key.toLowerCase();
   } else {
     key = k;
   }
+
   if (key === "enter") {
     if (currentAttempt.length != 5) {
       alert("not enough letters");
       return;
     }
     let isValid = false;
-    for (let letter of guess) {
+    for (let letter of secret) {
       if (currentAttempt.includes(letter)) {
         isValid = true;
       }
@@ -106,11 +108,10 @@ function handleKeyDown(e, k) {
       return;
     }
     history.push(currentAttempt);
+    saveGame();
     currentAttempt = "";
   } else if (key === "backspace") {
     currentAttempt = currentAttempt.slice(0, currentAttempt.length - 1);
-    updateGrid();
-    return;
   } else if (/[a-z]/.test(key) && key.length == 1) {
     if (currentAttempt.length < 5) {
       currentAttempt += key;
@@ -131,10 +132,12 @@ function drawAttempt(row, attempt, isCurrent) {
       cell.style.backgroundColor = isCurrent
         ? "#111"
         : getBgColor(attempt[i], i);
+      cell.style.borderColor = getBgColor(attempt[i], i) + " !important";
     } else {
       cell.firstChild.innerText = "";
       cell.classList.remove("contains");
       cell.style.backgroundColor = "#111";
+      cell.style.borderColor = "#676860 !important";
     }
   }
 }
@@ -165,12 +168,36 @@ function getBestColor(a, b) {
 }
 
 function getBgColor(attempt, i) {
-  if (guess.indexOf(attempt) === -1) return GREY;
-  if (guess.indexOf(attempt) !== i) return YELLOW;
+  if (secret.indexOf(attempt) === -1) return GREY;
+  if (secret.indexOf(attempt) !== i) return YELLOW;
   return GREEN;
 }
 
+function saveGame() {
+  try {
+    localStorage.setItem(
+      "data",
+      JSON.stringify({
+        secret,
+        history,
+      })
+    );
+  } catch {}
+}
+
+function loadGame() {
+  try {
+    let data = localStorage.getItem("data");
+    data = JSON.parse(data);
+    if (data.secret === secret) {
+      history = data.history;
+    }
+  } catch {}
+}
+
+loadGame();
 buildGrid();
 buildKeyboard();
 updateGrid();
 updateKeyboard();
+document.addEventListener("keydown", handleKeyDown);
