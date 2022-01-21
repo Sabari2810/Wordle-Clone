@@ -149,6 +149,11 @@ function drawAttempt(row, attempt, isCurrent) {
         cell.classList.add("contains");
       } else {
         cell.classList.remove("contains");
+        setTimeout(() => {
+          cell.classList.add("flip");
+          cell.firstChild.classList.add("flip");
+          cell.style.transitionDelay = i * 300 + "ms";
+        }, 50);
       }
       cell.style.backgroundColor = isCurrent
         ? "#111"
@@ -158,7 +163,7 @@ function drawAttempt(row, attempt, isCurrent) {
       cell.firstChild.innerText = "";
       cell.classList.remove("contains");
       cell.style.backgroundColor = "#111";
-      cell.style.borderColor = "#676860 !important";
+      cell.style.borderColor = LIGHTGREY;
     }
   }
 }
