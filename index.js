@@ -4,9 +4,12 @@ let secret = "horse";
 let currentAttempt = "";
 let history = [];
 
-const GREY = "#111";
+// const GREY = "#111";
 const YELLOW = "#b59f3b";
 const GREEN = "#538d4e";
+
+const GREY = "#818384";
+const LIGHTGREY = "#3a3a3c";
 let keyboardBtns = new Map();
 
 function buildGrid() {
@@ -78,7 +81,9 @@ function updateGrid() {
     drawAttempt(row, attempt, false);
     row = row.nextSibling;
   }
-  drawAttempt(row, currentAttempt, true);
+  if (history.length != 6) {
+    drawAttempt(row, currentAttempt, true);
+  }
 }
 
 function handleKeyDown(e, k) {
@@ -104,7 +109,12 @@ function handleKeyDown(e, k) {
       }
     }
     if (!isValid) {
-      alert("not in my wordlist");
+      shakeRow(false);
+      setTimeout(() => {
+        alert("not in my wordlist");
+        shakeRow(true);
+      }, 30);
+
       return;
     }
     history.push(currentAttempt);
@@ -121,18 +131,29 @@ function handleKeyDown(e, k) {
   updateKeyboard();
 }
 
+function shakeRow(removeClass) {
+  let rowIndex = history.length;
+  if (!removeClass) {
+    grid.childNodes[rowIndex].classList.add("shake");
+  } else {
+    grid.childNodes[rowIndex].classList.remove("shake");
+  }
+}
+
 function drawAttempt(row, attempt, isCurrent) {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < row.childNodes.length; i++) {
     let cell = row.childNodes[i];
     if (attempt[i] !== undefined) {
       cell.firstChild.innerText = attempt[i];
       if (isCurrent) {
         cell.classList.add("contains");
+      } else {
+        cell.classList.remove("contains");
       }
       cell.style.backgroundColor = isCurrent
         ? "#111"
         : getBgColor(attempt[i], i);
-      cell.style.borderColor = getBgColor(attempt[i], i) + " !important";
+      cell.style.borderColor = getBgColor(attempt[i], i);
     } else {
       cell.firstChild.innerText = "";
       cell.classList.remove("contains");
@@ -164,11 +185,11 @@ function getBestColor(a, b) {
   if (a === YELLOW || b === YELLOW) {
     return YELLOW;
   }
-  return GREY;
+  return LIGHTGREY;
 }
 
 function getBgColor(attempt, i) {
-  if (secret.indexOf(attempt) === -1) return GREY;
+  if (secret.indexOf(attempt) === -1) return LIGHTGREY;
   if (secret.indexOf(attempt) !== i) return YELLOW;
   return GREEN;
 }

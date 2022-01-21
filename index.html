@@ -55,7 +55,6 @@
       </svg>
     </div>
   </div>
-  <hr />
   <div id="grid"></div>
   <div id="keyboard"></div>
 </div>
@@ -74,13 +73,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  hr {
-    margin-top: -20px;
-    margin-bottom: 45px;
-    background-color: #818384;
-    height: 1px;
-    border: none;
+    border-bottom: 1px solid #676860;
+    height: 50px;
+    margin-bottom: 50px;
   }
   .main {
     max-width: 600px;
@@ -103,16 +98,21 @@
     text-transform: uppercase;
     border-radius: 8%;
     cursor: pointer;
+    border: none;
+    transition: background-color ease-in 80ms;
   }
   button:active {
     border-style: outset;
+    border: none;
+    outline: none;
   }
   .krow {
     display: flex;
   }
   #keyboard {
     display: flex;
-    margin-top: 40px;
+    margin-top: 60px;
+    bottom: 10;
     flex-direction: column;
     align-items: center;
   }
@@ -140,11 +140,11 @@
   .cell {
     height: 60px;
     width: 60px;
-    border: 1px solid #676860;
-    /* display: inline-block; */
+    border: 2px solid #3a3a3c;
     display: flex;
     margin: 2px;
-    font-size: 40px;
+    font-size: 35px;
+    font-weight: bold;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -160,7 +160,27 @@
 
   .contains {
     animation: scaleUp 80ms;
-    border: 1px solid #aaa !important;
+    border: 2px solid #818384 !important;
+  }
+
+  .shake {
+    animation: shake 100ms;
+    animation-iteration-count: 4;
+  }
+
+  @keyframes shake {
+    0% {
+      transform: translate(6px, 0);
+    }
+    50% {
+      transform: translate(0, 0);
+    }
+    75% {
+      transform: translate(-6px, 0);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
   }
 
   @keyframes scaleUp {
